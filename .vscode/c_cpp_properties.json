@@ -4,7 +4,7 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/Libraries/**", 
-                "${workspaceFolder}/Libraries/lpc1700-cmsis-lite-2011.01.26-i686-1/**"
+                "${workspaceFolder}/Libraries/lpc1700-cmsis-lite-2011.01.26-i686-1/include/**"
             ],
             "defines": [],
             "macFrameworkPath": [
