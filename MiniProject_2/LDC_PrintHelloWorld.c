@@ -8,22 +8,22 @@ void SendData(uint8_t* Data,int length)
 }
 
 void LCDEnable(){
-	uint8_t Data[2] = {0x00,0x0C};  
+	uint8_t Data[2] = {0x00,0x0C};
 	SendData(Data,2);}
 void LCDDisable(){
-	uint8_t Data[2] = {0x00,0x08};  
+	uint8_t Data[2] = {0x00,0x08};
 	SendData(Data,2);}
-void LCDGoHome(){  
-	uint8_t Data[2] = {0x00,0x02}; 
+void LCDGoHome(){
+	uint8_t Data[2] = {0x00,0x02};
 	SendData(Data,2);}
-void LCDNewLine(){ 
-	uint8_t Data[2] = {0x00,0xC0}; 
+void LCDNewLine(){
+	uint8_t Data[2] = {0x00,0xC0};
 	SendData(Data,2);}
-void LCDInit(){    
-	uint8_t Data[11] = {0x00,0x34,0x0c,0x06,0x35,0x04,0x10,0x42,0x9f,0x34,0x02}; 
+void LCDInit(){
+	uint8_t Data[11] = {0x00,0x34,0x0c,0x06,0x35,0x04,0x10,0x42,0x9f,0x34,0x02};
 	SendData(Data,11);}
 
-void LCDClear()//NOTE: With character set R, clear command doesn't work. Instead, blank space (0xA0 or 0x91) must be written to every space 
+void LCDClear()//NOTE: With character set R, clear command doesn't work. Instead, blank space (0xA0 or 0x91) must be written to every space
 {
 	uint8_t Data[4] = {0x00,0x34,0x0E,0x06};
 	uint8_t clrLine[17] = {0x40,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0};
@@ -41,12 +41,9 @@ void LCDClear()//NOTE: With character set R, clear command doesn't work. Instead
 
 void LCDPrint(char* input)
 {
-	int i,datacount=1,inputlen = strlen(input); 
+	int i,datacount=1,inputlen = strlen(input);
 	uint8_t* Data = (uint8_t*)malloc(sizeof(uint8_t)*(inputlen+1));
 	Data[0] = 0x40;
-	char outputbuf[50];
-	sprintf(outputbuf,"%s %d \n\r",input, strlen(input));
-	WriteText(outputbuf);
 	for(i = 0; i<inputlen;i++)
 	{
 		if(input[i]==10){
@@ -57,7 +54,7 @@ void LCDPrint(char* input)
 		}
 		else if	(input[i]<0x60){
 			Data[datacount]=input[i]|0x80;
-		} 	
+		}
 		else{
 	 		Data[datacount] = input[i];
 	 	}
@@ -65,7 +62,7 @@ void LCDPrint(char* input)
 	}
 
 	SendData(Data,datacount);
-	free(Data);	
+	free(Data);
 }
 
 void main_LDCPrintHelloWorld(void)

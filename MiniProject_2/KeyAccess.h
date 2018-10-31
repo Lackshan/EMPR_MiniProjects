@@ -6,7 +6,8 @@
 
 typedef struct {int i,j;}tuple;
 
-#define TP_FAILURE 9//Figure out some hacky way of assigning a tuple to this
+#define TP_FAILURE 9
+//Figure out some hacky way of assigning a tuple to this
 
 char GetKeyInput();
 unsigned char GetKeyData(char BitMask);

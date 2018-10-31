@@ -41,7 +41,7 @@ void GetInput()//Every accepted key press, assign a to prev char. After a timer,
 
 void main(void)
 {
-	SysTick_Config(SystemCoreClock/10-1);//Set up Delay
+	Delay_Init();//Set up Delay
 	InitSerial();
 	GetAddresses();
 	Delay(10);

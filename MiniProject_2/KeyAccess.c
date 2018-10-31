@@ -7,7 +7,7 @@ char GetKeyInput()
 		{'4','5','6','B'},
 		{'7','8','9','C'},
 		{'*','0','#','D'}
-		
+
 	};
 	tuple coords = DecodeInput();
 	if(coords.i == TP_FAILURE)
@@ -34,7 +34,6 @@ tuple DecodeInput()
 				for(coords.j = 3;coords.j>=0;coords.j--)//Cycle through columns
 				{
 					Data = GetKeyData(columnMask);//Check rows
-
 
 					if((Data&columnMask)>0)
 					{

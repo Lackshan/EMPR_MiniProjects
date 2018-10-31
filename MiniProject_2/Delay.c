@@ -11,3 +11,7 @@ void Delay(unsigned long tick)
 	systickcnt = Counter;
 	while((Counter-systickcnt)<tick);
 }
+void Delay_Init()
+{
+	SysTick_Config(SystemCoreClock/10-1);
+}
