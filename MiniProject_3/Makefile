@@ -46,16 +46,16 @@ LDFLAGS=$(CMSISFL) -static -mcpu=cortex-m3 -mthumb -mthumb-interwork \
 LDFLAGS+=-L$(CMSIS)/lib -lDriversLPC17xxgnu
 
 # Name of the binary being built
-EXECNAME	= bin/GenSine
+EXECNAME	= bin/MP3
 
 # Source files provided by the user to build the project
-OBJ		= GenerateSine.o Delay.o SerialIO.o DAC.o
+OBJ		= MP3.o Delay.o SerialIO.o DAC.o PWM.o I2C.o ADC.o KeyAccess.o TIM.o
 
 # Commands handled by this makefile
-all: 	GenSine
+all: 	MP3
 	@echo "Build finished"
 
-GenSine: $(OBJ)
+MP3: $(OBJ)
 	mkdir -p bin # prevent error "No such file or directory" during linking
 	$(CC) -o $(EXECNAME) $(OBJ) $(LDFLAGS)
 	$(OBJCOPY) -I elf32-little -O binary $(EXECNAME) $(EXECNAME).bin
