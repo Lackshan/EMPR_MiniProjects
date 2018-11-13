@@ -1,46 +1,67 @@
-#include "PWM.h"
-//This is for the standard pwm module. There is also mcpwm for motor control.
-void InitializePWM()
-{
-  PINSEL_CFG_Type PINCFG;//PWM - check the pin
-  PINCFG.Funcnum = 1;
-  PINCFG.OpenDrain =0;
-  PINCFG.Pinmode = 0;
-  PINCFG.Pinnum = 0;
-  PINCFG.Portnum = 2;
-  PINSEL_ConfigPin(&PINCFG);
+#include <lpc17xx.h>
+#define PWMPRESCALE (25-1) //25 PCLK cycles to increment TC by 1 i.e. 1 Micro-second
 
-  PWM_TIMERCFG_Type timercfg;
-  timercfg.PrescaleOption = PWM_TIMER_PRESCALE_USVAL;
-  timercfg.PrescaleValue = 1;//I don't know what this should actually be. //Tick Time in microseconds
-  PWM_ConfigStructInit(PWM_MODE_TIMER,&timercfg);
+void initPWM(void);
+void updatePulseWidth(unsigned int pulseWidth);
+//Delay stuff must be replaced!!!
+void delayMS(unsigned int milliseconds);
 
-  PWM_Init(LPC_PWM1,PWM_MODE_TIMER,&timercfg);
-  PWM_ChannelConfig(LPC_PWM1,1,PWM_CHANNEL_SINGLE_EDGE);//Figure out which channel to use
+void initTimer0(void);
 
-
-
-  PWM_MATCHCFG_Type MatchConfig;
-  MatchConfig.IntOnMatch = DISABLE;
-  MatchConfig.MatchChannel = 0;
-  MatchConfig.ResetOnMatch = DISABLE;
-  MatchConfig.StopOnMatch = DISABLE;
-
-  PWM_MatchUpdate(LPC_PWM1,0,100,PWM_MATCH_UPDATE_NOW);
-  PWM_ConfigMatch(LPC_PWM1,&MatchConfig);
-//  PWM_ChannelCmd(LPC_PWM1,0,ENABLE);
-  MatchConfig.MatchChannel = 1;
-
-  PWM_MatchUpdate(LPC_PWM1,1,20,PWM_MATCH_UPDATE_NOW);
-  PWM_ConfigMatch(LPC_PWM1,&MatchConfig);
-  PWM_ChannelCmd(LPC_PWM1,1,ENABLE);
-  PWM_ResetCounter(LPC_PWM1);
-  PWM_CounterCmd(LPC_PWM1,ENABLE);
-  PWM_Cmd(LPC_PWM1,ENABLE);
-
+int main(void) {
+    initPWM();
+    initTimer0();
+    while(1) {
+        int i;
+        for(i=0; i<=1000; i++) {
+            updatePulseWidth(i);
+            delayMS(5);
+        } 
+    }
 }
 
-void ChangeDutyCycle(uint32_t percent)
+void initPWM(void) {
+	/*Assuming that PLL0 has been setup with CCLK = 100Mhz and PCLK = 25Mhz.*/
+	LPC_PINCON->PINSEL4 = (1<<0);
+	// LPC_PINCON->PINSEL3 |= (1<<5); //Select PWM1.1 output for Pin1.18
+	LPC_PWM1->PCR = 0x0; //Select Single Edge PWM - by default its single Edged so this line can be removed
+	LPC_PWM1->PR = PWMPRESCALE; //1 micro-second resolution
+	LPC_PWM1->MR0 = 1000; //1000us = 1ms period duration
+	LPC_PWM1->MR1 = 250; //250us - default pulse duration i.e. width
+	LPC_PWM1->MCR = (1<<1); //Reset PWM TC on PWM1MR0 match
+	LPC_PWM1->LER = (1<<1) | (1<<0); //update values in MR0 and MR1
+	LPC_PWM1->PCR = (1<<9); //enable PWM output
+	LPC_PWM1->TCR = (1<<1); //Reset PWM TC & PR
+
+	LPC_PWM1->TCR = (1<<0) | (1<<3); //enable counters and PWM Mode
+
+	//PWM Generation goes active now!
+	//Now you can get the PWM output on Pin P1.18
+}
+
+void updatePulseWidth(unsigned int pulseWidth) {
+	LPC_PWM1->MR1 = pulseWidth; //Update MR1 with new value
+	LPC_PWM1->LER = (1<<1); //Load the MR1 new value at start of next cycle
+}
+
+//COPIED!!! FIX NOW!!
+void delayMS(unsigned int milliseconds) //Using Timer0
 {
-  PWM_MatchUpdate(LPC_PWM1,1,percent,PWM_MATCH_UPDATE_NOW);
+	LPC_TIM0->TCR = 0x02; //Reset Timer
+	LPC_TIM0->TCR = 0x01; //Enable timer
+
+	while(LPC_TIM0->TC < milliseconds); //wait until timer counter reaches the desired delay
+
+	LPC_TIM0->TCR = 0x00; //Disable timer
+}
+
+void initTimer0(void) //To setup Timer0 used delayMS() function
+{
+	/*Assuming that PLL0 has been setup with CCLK = 100Mhz and PCLK = 25Mhz.*/
+
+	LPC_TIM0->CTCR = 0x0;
+	LPC_TIM0->PR = 25000-1; //Increment TC at every 24999+1 clock cycles
+	//25000 clock cycles @25Mhz = 1 mS
+
+	LPC_TIM0->TCR = 0x02; //Reset Timer
 }
