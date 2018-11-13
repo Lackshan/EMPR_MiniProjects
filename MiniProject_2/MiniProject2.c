@@ -48,10 +48,10 @@ void main(void)
 
 	LCDInit();//Note: As initialisation of the I2C interface is done in GetAddresses, it doesn't need to be done here.
 	LCDClear();
-	LCDPrint("Hello World!");
+	LCDPrint("Hello World");
 	Delay(10);
 	LCDClear();
-	LCDPrint("Hello \n World!");//PrintToLCD needs to be modified to read newline characters
+	LCDPrint("Hello \nWorld");//PrintToLCD needs to be modified to read newline characters
 	Delay(10);
 	LCDClear();
 

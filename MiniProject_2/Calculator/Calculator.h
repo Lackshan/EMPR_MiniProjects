@@ -12,9 +12,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define POLLING_TIME 1 //in centi seconds
-#define MAXVAL 3
-
-		
-
+void data(tuple coords);
+void zero(tuple coords);
+void disp(char* charString);
+void bckspc(tuple coords);
+void opr(tuple coords);
+void equals(tuple coords);
+int plus(int a,int b);
+int minus(int a,int b);
+int divd(int a,int b);
+int times(int a,int b);
 #endif
