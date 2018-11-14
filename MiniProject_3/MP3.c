@@ -1,4 +1,11 @@
 #include "MP3.h"
+#include <lpc17xx.h>
+#define PWMPRESCALE (25-1) //25 PCLK cycles to increment TC by 1 i.e. 1 Micro-second
+
+void initPWM(void);
+void updatePulseWidth(unsigned int pulseWidth);
+void delayMS(unsigned int milliseconds);
+void initTimer0(void);
 
 void Stage2()
 {
@@ -53,6 +60,7 @@ void Stage3()
     keyInput = GetKeyInput();
   }
 }
+
 void Stage4()
 {
   void (*f)(void)  = Stage4IR;
@@ -67,12 +75,9 @@ void Stage4()
     keyInput = GetKeyInput();
   }
   StopTIM();
-}
-void Stage4IR()//Change the PWM timer
-{
-  ChangeDutyCycle(50);
-}
 
+
+}
 
 int main(void)
 {

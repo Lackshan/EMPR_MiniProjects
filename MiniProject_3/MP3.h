@@ -11,7 +11,6 @@
 #include <stdlib.h>
 #include <stdlib.h>
 
-#include "PWM.h"
 #include "TIM.h"
 #include "SinetoSineGetter.h"
 #include "ADC.h"

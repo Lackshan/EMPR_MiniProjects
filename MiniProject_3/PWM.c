@@ -3,9 +3,7 @@
 
 void initPWM(void);
 void updatePulseWidth(unsigned int pulseWidth);
-//Delay stuff must be replaced!!!
 void delayMS(unsigned int milliseconds);
-
 void initTimer0(void);
 
 int main(void) {
@@ -44,7 +42,6 @@ void updatePulseWidth(unsigned int pulseWidth) {
 	LPC_PWM1->LER = (1<<1); //Load the MR1 new value at start of next cycle
 }
 
-//COPIED!!! FIX NOW!!
 void delayMS(unsigned int milliseconds) //Using Timer0
 {
 	LPC_TIM0->TCR = 0x02; //Reset Timer
