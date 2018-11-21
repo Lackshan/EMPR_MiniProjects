@@ -18,8 +18,8 @@ void disp(char* charString);
 void bckspc(tuple coords);
 void opr(tuple coords);
 void equals(tuple coords);
-int plus(int a,int b);
-int minus(int a,int b);
-int divd(int a,int b);
-int times(int a,int b);
+float plus(float a,float b);
+float minus(float a,float b);
+float divd(float a,float b);
+float times(float a,float b);
 #endif

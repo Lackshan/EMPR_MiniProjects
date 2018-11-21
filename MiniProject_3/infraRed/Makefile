@@ -46,23 +46,18 @@ LDFLAGS=$(CMSISFL) -static -mcpu=cortex-m3 -mthumb -mthumb-interwork \
 LDFLAGS+=-L$(CMSIS)/lib -lDriversLPC17xxgnu
 
 # Name of the binary being built
-EXECNAME	= bin/MP3
+EXECNAME	= bin/irSense
 
 # Source files provided by the user to build the project
-OBJ		= MP3.o Delay.o SerialIO.o DAC.o PWM.o I2C.o ADC.o KeyAccess.o TIM.o
-ADCPrintOB = ADC_DAC.o Delay.o SerialIO.o I2C.o ADC.o
+OBJ		= irSense.o Delay.o SerialIO.o I2C.o ADC.o KeyAccess.o LDC_PrintHelloWorld.o
+
 # Commands handled by this makefile
-all: 	MP3
+all: 	irSense
 	@echo "Build finished"
 
-MP3: $(OBJ)
+irSense: $(OBJ)
 	mkdir -p bin # prevent error "No such file or directory" during linking
 	$(CC) -o $(EXECNAME) $(OBJ) $(LDFLAGS)
-	$(OBJCOPY) -I elf32-little -O binary $(EXECNAME) $(EXECNAME).bin
-
-ADCPrint: $(ADCPrintOB)
-	mkdir -p bin # prevent error "No such file or directory" during linking
-	$(CC) -o $(EXECNAME) $(ADCPrintOB) $(LDFLAGS)
 	$(OBJCOPY) -I elf32-little -O binary $(EXECNAME) $(EXECNAME).bin
 
 # make clean - Clean out the source tree ready to re-build the project
