@@ -11,16 +11,14 @@
 #include <stdlib.h>
 #include <stdlib.h>
 
-#include "TIM.h"
+#include "PWM.h"
+#include "Timer.h"
 #include "SinetoSineGetter.h"
 #include "ADC.h"
 #include "DAC.h"
 #include "KeyAccess.h"
 #include "Delay.h"
 #include "lpc17xx_adc.h"
-
-
-void Stage4IR();
 
 void Stage2();
 void Stage3();
