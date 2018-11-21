@@ -9,7 +9,7 @@ void GetInput()//Every accepted key press, assign a to prev char. After a timer,
 		char a = GetKeyInput();
 		char output[2] = {a,'\0'};
 
-		if(a == ' '){counter = MAXVAL;}
+		if(a == ' '){prevChar = ' ';}
 		if(a != ' ' && a != prevChar)
 		{
 			if(row==16)
@@ -28,14 +28,14 @@ void GetInput()//Every accepted key press, assign a to prev char. After a timer,
 		}
 		else
 		{
-			if(counter == MAXVAL)
+			/*if(counter == MAXVAL)
 			{
 				counter = 0;
 				prevChar = ' ';
 			}
-			counter++;
+			counter++;*/
 		}
-		Delay(POLLING_TIME);
+		//Delay(1);
 	}
 }
 

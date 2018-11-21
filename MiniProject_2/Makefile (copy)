@@ -9,7 +9,7 @@ PKG=/opt/york/cs/net
 
 # Specify the commands needed from the tool chain, CC is the C-compiler,
 # OBJCOPY converts the resulting program binary into a format we can load
-# into the MBED board
+# into the MBED board 
 ARCH=arm-none-eabi
 CC=$(ARCH)-gcc
 OBJCOPY=$(ARCH)-objcopy
@@ -36,7 +36,7 @@ LDSCRIPT = $(CMSIS)/lib/ldscript_rom_gnu.ld
 CFLAGS=-mcpu=cortex-m3  -mthumb  -Wall  -O0  -mapcs-frame  -D__thumb2__=1 \
   -msoft-float  -gdwarf-2  -mno-sched-prolog  -fno-hosted  -mtune=cortex-m3 \
   -march=armv7-m  -mfix-cortex-m3-ldrd   -ffunction-sections  -fdata-sections \
-          -D__RAM_MODE__=0 $(CMSISINCLUDES) -I.
+          -D__RAM_MODE__=0 $(CMSISINCLUDES) -I. 
 
 LDFLAGS=$(CMSISFL) -static -mcpu=cortex-m3 -mthumb -mthumb-interwork \
 	   -Wl,--start-group -L$(THUMB2GNULIB) -L$(THUMB2GNULIB2) \
@@ -46,23 +46,18 @@ LDFLAGS=$(CMSISFL) -static -mcpu=cortex-m3 -mthumb -mthumb-interwork \
 LDFLAGS+=-L$(CMSIS)/lib -lDriversLPC17xxgnu
 
 # Name of the binary being built
-EXECNAME	= bin/MP3
+EXECNAME	= bin/MiniProject2
 
 # Source files provided by the user to build the project
-OBJ		= MP3.o Delay.o SerialIO.o DAC.o PWM.o I2C.o ADC.o KeyAccess.o TIM.o
-ADCPrintOB = ADC_DAC.o Delay.o SerialIO.o I2C.o ADC.o
+OBJ		= MiniProject2.o Delay.o I2C.o I2CGetAddresses.o LDC_PrintHelloWorld.o SerialIO.o KeyAccess.o 
+
 # Commands handled by this makefile
-all: 	MP3
+all: 	MiniProject2
 	@echo "Build finished"
 
-MP3: $(OBJ)
+MiniProject2: $(OBJ)
 	mkdir -p bin # prevent error "No such file or directory" during linking
 	$(CC) -o $(EXECNAME) $(OBJ) $(LDFLAGS)
-	$(OBJCOPY) -I elf32-little -O binary $(EXECNAME) $(EXECNAME).bin
-
-ADCPrint: $(ADCPrintOB)
-	mkdir -p bin # prevent error "No such file or directory" during linking
-	$(CC) -o $(EXECNAME) $(ADCPrintOB) $(LDFLAGS)
 	$(OBJCOPY) -I elf32-little -O binary $(EXECNAME) $(EXECNAME).bin
 
 # make clean - Clean out the source tree ready to re-build the project
@@ -82,4 +77,4 @@ install:
 	@echo "Copying " $(EXECNAME) "to the MBED file system"
 	cp $(EXECNAME).bin /media/$(USER)/MBED &
 	sync
-	@echo "Now press the reset button on all MBED file systems and prepare to suffer"
+	@echo "Now press the reset button on all MBED file systems"

@@ -82,14 +82,14 @@ int main()
   }
   else if(keyInput == '2')
   {
-    avgs.i = 2500;
-    avgs.j = 4000;
+    avgs.j = 640;
+    avgs.i = 3150;
   }
-  double scaling = avgs.j/(avgs.j-avgs.i);
-  double Data = 0;
+  double Data = 0,constant = (3.3/(4095*4095))*(avgs.i-avgs.j);
   int i = 0;
   char output[50] = "";
   LCDClear();
+  Delay(20);
   while(1)
   {
     Data = 0;
@@ -98,8 +98,14 @@ int main()
       Data += getADC();
     }
     Data/=10;
-    //double voltage = (Data/avgs.i)*scaling;
-    sprintf(output,"%lf    \n ",Data);
+
+    double voltage = ((double)Data/4095)*3.3;
+    double calicalculation = (avgs.i-avgs.j)/(0.0875*Data);//1/((Data-avgs.j)*constant);//(4095*80/(3.3*(avgs.i + constant*Data)))+10;
+    //double distance = (1.85/(0.047297297*(voltage+0.1)))-5;//voltrange^2/0.0875 *voltage+offset
+    //if( distance > 80)distance = 80;
+    if( calicalculation > 80)calicalculation = 80;
+  //  double distance  = ((abs(Data-avgs.i))/(avgs.i-avgs.j))*70 + 10;
+    sprintf(output,"%lf V   \n%lf cm   ",voltage,calicalculation);
     LCDGoHome();
     LCDPrint(output);
     Delay(20);
@@ -107,3 +113,12 @@ int main()
   ADC_DeInit(LPC_ADC);
   return 0;
 }
+/*
+
+Max = 200
+
+Min = 3000
+
+
+
+*/

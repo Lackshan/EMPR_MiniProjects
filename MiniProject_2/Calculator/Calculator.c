@@ -1,8 +1,9 @@
 #include "Calculator.h"
 
 char val[2][17],oprSymbols[4] = {'+','-','*','/'};;
-int selectedValue = 0,output=0,operator =0,cleardisp =0;
-static int (*operators[])(int,int) = {&plus,&minus,&times,&divd};
+int selectedValue = 0,operator =0,cleardisp =0;
+float output = 0;
+static float (*operators[])(float,float) = {&plus,&minus,&times,&divd};
 
 void main()//You know what? Just use a character counter instead of doing the shit that you are trying now.
 {
@@ -92,9 +93,27 @@ void opr(tuple coords)
 
 void equals(tuple coords)
 {
-	output = operators[operator](atoi(val[0]),atoi(val[1]));//Do the operation on the values
+	output = operators[operator](atof(val[0]),atof(val[1]));//Do the operation on the values
 	char outputBuf[50];
-	sprintf(outputBuf,"%d",output);
+	int i = 0;
+	sprintf(outputBuf,"%f",output);
+	for(i = strlen(outputBuf)-1;i>0;--i)
+	{
+		if(outputBuf[i] == '0')
+		{
+			outputBuf[i] = '\0';
+		}
+		else if(outputBuf[i] == '.' )
+		{
+			outputBuf[i] = '\0';
+			break;
+		}
+		else
+		{
+			break;
+		}
+
+	}
 	LCDClear();
 	LCDGoHome();
 	disp(outputBuf);
@@ -105,7 +124,7 @@ void equals(tuple coords)
 	output = 0;
 }
 
-int plus(int a,int b){return a+b;}
-int minus(int a,int b){return a-b;}
-int divd(int a,int b){return a/b;}
-int times(int a,int b){return a*b;}
+float plus(float a,float b){return a+b;}
+float minus(float a,float b){return a-b;}
+float divd(float a,float b){return a/b;}
+float times(float a,float b){return a*b;}
