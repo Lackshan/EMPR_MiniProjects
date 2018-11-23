@@ -1,5 +1,6 @@
 #include "MP3.h"
 
+
 void Stage2()
 {
   uint32_t* SineWaveTable = (uint32_t*)malloc(sizeof(uint32_t)*PRECISION);
@@ -42,15 +43,41 @@ void Stage2()
 }
 void Stage3()
 {
-  uint32_t Data = 0;
-  char keyInput = ' ';
+  uint32_t Buf = 6879;
+  GPDMA_LLI_Type LLI_Struct;
+  GPDMA_Channel_CFG_Type DAC_CCFG_Struct;
+
+  InitializeGPDMA(&Buf,&LLI_Struct,&DAC_CCFG_Struct,1);
+  DAC_StartSend(100,1);
+
+  char keyInput = ' ', output[50];
+
   while(keyInput == ' ')
   {//Read a value from ADC, output it through DAC.
+    /*GPDMA_ChannelCmd(0,ENABLE);
+    ADC_StartCmd(LPC_ADC,ADC_START_NOW);
+    while(Channel0_TC==0);
+    GPDMA_ChannelCmd(0,DISABLE);
+    Channel0_TC = 0;
+    sprintf(output,"%d\n\r",Buf);
+    WriteText(output);
+    Buf = 1700;
+    GPDMA_ChannelCmd(1,ENABLE);
+    while(Channel1_TC == 0);
+    GPDMA_ChannelCmd(1,DISABLE);
+    Channel1_TC = 0;*/
+    SystemInit();
     ADC_StartCmd(LPC_ADC,ADC_START_NOW);
     while(ADC_ChannelGetStatus(LPC_ADC,ADC_CHANNEL_2,1)==RESET);
-    Data = ADC_GetData(ADC_CHANNEL_2);
-    DAC_UpdateValue(LPC_DAC,Data);
+    Buf = ADC_GetData(ADC_CHANNEL_2);
+    LPC_DAC->DACR = (Buf<<6);
+    sprintf(output,"%d\n\r",Buf);
+    WriteText(output);
     keyInput = GetKeyInput();
+
+  /*  GPDMA_Setup(&DAC_CCFG_Struct);
+    GPDMA_Setup(&ADC_CCFG_Struct);*/
+
   }
 }
 void Stage4()

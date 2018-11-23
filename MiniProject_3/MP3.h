@@ -20,7 +20,6 @@
 #include "Delay.h"
 #include "lpc17xx_adc.h"
 
-
 void Stage4IR();
 
 void Stage2();
