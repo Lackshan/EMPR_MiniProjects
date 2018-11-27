@@ -49,7 +49,7 @@ LDFLAGS+=-L$(CMSIS)/lib -lDriversLPC17xxgnu
 EXECNAME	= bin/MP3
 
 # Source files provided by the user to build the project
-OBJ		= MP3.o Delay.o SerialIO.o DAC.o PWM.o I2C.o ADC.o KeyAccess.o TIM.o
+OBJ		= MP3.o Delay.o SerialIO.o DAC.o I2C.o ADC.o KeyAccess.o
 ADCPrintOB = ADC_DAC.o Delay.o SerialIO.o I2C.o ADC.o
 # Commands handled by this makefile
 all: 	MP3

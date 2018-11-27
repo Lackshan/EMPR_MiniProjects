@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <stdlib.h>
 
+#include "LPC17xx.h"
+
 #include "PWM.h"
 #include "Timer.h"
 #include "SinetoSineGetter.h"
@@ -20,6 +22,8 @@
 #include "Delay.h"
 #include "lpc17xx_adc.h"
 
+volatile int buttonpress;
+volatile char prevKey,key;
 void Stage2();
 void Stage3();
 void Stage4();

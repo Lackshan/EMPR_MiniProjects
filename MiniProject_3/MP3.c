@@ -1,8 +1,26 @@
 #include "MP3.h"
 #define PWMPRESCALE (25-1) //25 PCLK cycles to increment TC by 1 i.e. 1 Micro-second
 
+void EINT3_IRQHandler(void)
+{
+  LPC_SC->EXTINT = 1<<3;
+  LPC_GPIOINT->IO0IntClr = (1<<5);
+  key = GetKeyInput();
+  if(key != prevKey && key != ' ')
+  {
+    buttonpress  = 1;
+    prevKey = key;
+    WriteText("button Pressed");
+  }
+  else if (key == ' ')
+  {
+    prevKey = ' ';
+  }
+}
+
 void Stage2()
 {
+  buttonpress = 0;
   uint32_t* SineWaveTable = (uint32_t*)malloc(sizeof(uint32_t)*PRECISION);
   int Frequency = 10,counter = 0,i;//in Hz
   double MaxAmplitude = 3,oldMax=0;//in Volts
@@ -16,8 +34,7 @@ void Stage2()
   }
   InitializeGPDMA(SineWaveTable,&LLI_Struct,&CCFG_Struct,PRECISION);
   DAC_StartSend(Frequency,PRECISION);
-  char keyInput = ' ';
-  while(keyInput == ' ')
+  while(buttonpress == 0)
   {//Every Ten Seconds, Change the Frequency and Amplitude
     Delay(2);
     char outputbuf[50];
@@ -35,7 +52,6 @@ void Stage2()
       }
       DAC_StartSend(rand()%100,PRECISION);
     }
-    keyInput = GetKeyInput();
     counter++;
   }
   WriteText("Finished Looping\n\r");
@@ -43,15 +59,14 @@ void Stage2()
 }
 void Stage3()
 {
+  buttonpress = 0;
   uint32_t Data = 0;
-  char keyInput = ' ';
-  while(keyInput == ' ')
+  while(buttonpress == 0)
   {//Read a value from ADC, output it through DAC.
     ADC_StartCmd(LPC_ADC,ADC_START_NOW);
     while(ADC_ChannelGetStatus(LPC_ADC,ADC_CHANNEL_2,1)==RESET);
     Data = ADC_GetData(ADC_CHANNEL_2);
     DAC_UpdateValue(LPC_DAC,Data);
-    keyInput = GetKeyInput();
   }
 }
 
@@ -66,7 +81,7 @@ void Stage4()
       for(i=0; i<=1000; i++) {
           updatePulseWidth(P26, i);
           delayMS(5, LPC_TIM0);
-    } 
+    }
   }
 
 }
@@ -74,6 +89,19 @@ void Stage4()
 int main(void)
 {
   InitSerial();
+  key = ' ';
+  SystemInit();
+  LPC_GPIO0->FIODIR &= ~(1<<5);
+  LPC_GPIOINT->IO0IntClr = (1<<5);
+  LPC_SC->EXTINT = 1<<3;
+  LPC_GPIOINT->IO0IntEnF |= (1<<5);
+
+  /*LPC_PINCON->PINSEL1 = (1<<7);//Check which pins the pcf8574 uses
+  LPC_SC->EXTMODE = 1; //Edge Triggered
+  LPC_SC->EXTPOLAR = 1;//Falling vs Rising Edge*/
+  NVIC_EnableIRQ(EINT3_IRQn);
+  __enable_irq();
+
   I2CInit();
   SetupPINS();
   Delay_Init();
