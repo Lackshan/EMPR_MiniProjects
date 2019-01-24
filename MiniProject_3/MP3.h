@@ -9,7 +9,6 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include <stdlib.h>
 
 #include "LPC17xx.h"
 
