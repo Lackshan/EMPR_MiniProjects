@@ -42,9 +42,8 @@ void initPWM(PWM_Pin_Type Pin) {
 }
 
 void updatePulseWidth(PWM_Pin_Type Pin, unsigned int pulseWidth) {
-	*Pin.Match_Register = pulseWidth; 	//Update Match Register with new value
+	*Pin.Match_Register = pulseWidth; 	//Update MR1 with new value
 	LPC_PWM1->LER = (1<<1); 			//Load the MR1 new value at start of next cycle
-										// IMPLEMENT METHOD OF CHOOSING VALUES FOR MR1-MR6!!
 }
 
 /* --------------------------------- End Of File ------------------------------ */
